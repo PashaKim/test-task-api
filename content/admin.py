@@ -20,6 +20,7 @@ class CustomUserAdmin(UserAdmin):
                 'fields': ('username', 'password1', 'password2', 'birth_date', 'sex', 'lat', 'lng')}),
          )
     fieldsets = UserAdmin.fieldsets + ((_('Custom info'), {'fields': ('birth_date', 'sex', 'lat', 'lng')}),)
+
     list_display = ('id', 'username', 'last_name', 'first_name', 'sex', 'birth_date', 'rating', 'show_in_search_results')
     readonly_fields = ('rating', 'show_in_search_results')
     search_fields = ('username', 'last_name')
