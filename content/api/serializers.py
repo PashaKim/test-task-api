@@ -1,15 +1,26 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from rest_framework import serializers
-from content.models import CustomUser as User, Post, CustomToken
+from content.models import Post
 
 
 class UserSerializer(serializers.ModelSerializer):
-    sex_display = serializers.CharField(source='get_sex_display', read_only=True)
+    sex = serializers.CharField(source='profile.get_sex_display', read_only=True)
+    birth_date = serializers.CharField(source='profile.birth_date', read_only=True)
+    rating = serializers.IntegerField(source='profile.rating', read_only=True)
+    show_in_search_results = serializers.IntegerField(source='profile.rating', read_only=True)
+
+    location = serializers.SerializerMethodField()
+
+    def get_location(self, obj):
+        if obj.profile.lat and obj.profile.lng:
+            return [obj.profile.lat, obj.profile.lng]
+        else:
+            return None
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'last_name', 'first_name', 'sex', 'sex_display', 'birth_date', 'rating',
-                  'show_in_search_results', 'lat', 'lng')
+        fields = ('id', 'username', 'last_name', 'first_name', 'sex', 'birth_date', 'rating',
+                  'show_in_search_results', 'location')
 
 
 class PostSerializer(serializers.ModelSerializer):
