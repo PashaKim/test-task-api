@@ -1,13 +1,15 @@
-import binascii
-import os
 from datetime import datetime
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
+from rest_framework.authtoken.models import Token
 from .validators import over_18
 
 
 class Post(models.Model):
-    author = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -27,7 +29,7 @@ class Post(models.Model):
 
 class PostEditHistory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    author = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     timestamp = models.PositiveIntegerField()
 
@@ -38,11 +40,14 @@ class PostEditHistory(models.Model):
         ordering = ('timestamp',)
 
 
-class CustomUser(User):
+class Profile(models.Model):
+    '''For sloving problem with token auth.  (Use: user.profile.bio)'''
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     bio = models.TextField()
     birth_date = models.DateField(validators=[over_18])
-    rating = models.IntegerField(default=0)
-    show_in_search_results = models.IntegerField(default=0)
+    rating = models.PositiveIntegerField(default=0)
+    show_in_search_results = models.PositiveIntegerField(default=0)
 
     '''PointField doesnt work on my kubuntu( '''
     lat = models.DecimalField('Latitude', max_digits=10, decimal_places=8)
@@ -58,31 +63,10 @@ class CustomUser(User):
     sex = models.SmallIntegerField(choices=SEX_CHOICES)
 
     class Meta:
-        ordering = ('last_name', )
+        ordering = ('user__last_name', )
 
 
-class CustomToken(models.Model):
-    """
-    The default authorization token model.
-    """
-    key = models.CharField("Key", max_length=40, primary_key=True)
-
-    user = models.OneToOneField(CustomUser, related_name='custom_auth_token', on_delete=models.CASCADE)
-    created = models.DateTimeField("Created", auto_now_add=True)
-
-    def __str__(self):
-        return self.key
-
-    def generate_key(self):
-        return binascii.hexlify(os.urandom(20)).decode()
-
-    def save(self, *args, **kwargs):
-        if not self.key:
-            self.key = self.generate_key()
-        return super(CustomToken, self).save(*args, **kwargs)
-
-    class Meta:
-        verbose_name = "Token"
-        verbose_name_plural = "Tokens"
-
-
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

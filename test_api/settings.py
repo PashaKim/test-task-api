@@ -125,8 +125,7 @@ STATIC_URL = '/static/'
 CUSTOM_USER_MODEL = 'content.CustomUser'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'content.authentication.CustomTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'content.api.authentication.ExpiringTokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
