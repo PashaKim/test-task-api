@@ -16,7 +16,7 @@ from .serializers import UserSerializer, PostSerializer, PostEditHistorySerializ
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    queryset = User.objects.all()
+    queryset = User.objects.exclude(profile__isnull=True).all()
     http_method_names = ['get']
     permission_classes = (IsAuthenticated, )
     filter_backends = (BirthDateFilter,
