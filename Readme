@@ -1,0 +1,39 @@
+ 
+Api endpoint:
+
+User - api/users/
+ signup -
+ login - api/auth/login
+ user posts list - api/users/<id>/posts_list/
+ my profile - api/my_profile/ #List info for authorized user
+
+Search
+ location - api/users/?location=<lat>,<lng>
+ rating - api/users/?rating=<int+>
+ sex - api/users/?sex=<int+> # Other(0), Male(1), Female(2)
+ birthday - api/users/?birth_date=<1900-06-23>
+
+Post - api/posts/
+ create - api/posts/creating
+ edit - api/posts/<id>/edit/
+ delete - api/posts/<id>/delete/
+ history - api/posts/<id>/history
+
+
+Summary:
+ 1. token based auth (after signup or login obtain token, no need to verify email or so) - failed
+ 2. methods:
+    a. GET must return 200 status code - Done
+    b. POST must return 201 status code - Done
+    c. PUT must return 202 status code - Done
+    d. DELETE must return 204 status code - Done
+    e. all the other request methods must return 415 status code or 400 - failed
+
+3. unit tests for API - Time is running out
+4. code coverage >= 75% - Time is running out
+5. requirements.txt - Done
+6. database dump - Done
+7. git repository - Done
+
+
+Django superuser login/pass: admin/admin
