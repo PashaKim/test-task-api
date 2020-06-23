@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from content.models import Post
+from content.models import Post, PostEditHistory
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     birth_date = serializers.CharField(source='profile.birth_date', read_only=True)
     rating = serializers.IntegerField(source='profile.rating', read_only=True)
     show_in_search_results = serializers.IntegerField(source='profile.rating', read_only=True)
+    bio = serializers.CharField(source='profile.bio', read_only=True)
 
     location = serializers.SerializerMethodField()
 
@@ -20,10 +21,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'last_name', 'first_name', 'sex', 'birth_date', 'rating',
-                  'show_in_search_results', 'location')
+                  'show_in_search_results', 'location', 'bio')
 
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Post
+
+
+class PostEditHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = PostEditHistory

@@ -1,3 +1,7 @@
-from django.test import TestCase
+import json
 
-# Create your tests here.
+from rest_framework.test import APIRequestFactory
+
+# Using the standard RequestFactory API to create a form POST request
+factory = APIRequestFactory()
+request = factory.post('/api/posts/creating/',  json.dumps({'author': 2, 'text': 'test post test'}),  content_type='application/json')

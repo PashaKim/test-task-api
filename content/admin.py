@@ -1,7 +1,6 @@
 from django.contrib import admin
 from datetime import datetime
-from django.contrib.auth.admin import UserAdmin
-from .models import Profile, Post, PostEditHistory, User
+from .models import Profile, Post, PostEditHistory
 
 
 @admin.register(Profile)
@@ -22,7 +21,7 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(PostEditHistory)
 class PostEditHistoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'post', 'author', 'updated')
+    list_display = ('id', 'post', 'post_id', 'author', 'updated')
     readonly_fields = ('post', 'author', 'text', 'timestamp')
 
     def updated(self, obj):
