@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from content.models import Post
+from content.models import Post, PostEditHistory
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -27,3 +27,9 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Post
+
+
+class PostEditHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = PostEditHistory
